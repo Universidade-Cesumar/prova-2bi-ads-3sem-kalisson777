@@ -13,21 +13,22 @@
         <h1>Controle de Almoxarifado</h1>
 
         <div class="formulario">
-            <input
-                type="text"
-                id="input-nome"
-                placeholder="Nome do material"
-            >
+            <input type="text" id="input-nome" placeholder="Nome do material">
 
-            <input
-                type="number"
-                id="input-quantidade"
-                placeholder="Quantidade"
-            >
+            <input type="number" id="input-quantidade" placeholder="Quantidade">
 
             <button id="btn-cadastrar">
                 Cadastrar
             </button>
+        </div>
+
+        <div class="formulario">
+            <input
+                type="number"
+                id="input-retirada"
+                placeholder="Quantidade para retirar"
+                min="1"
+            >
         </div>
 
         <h2>Materiais Cadastrados</h2>
@@ -37,10 +38,12 @@
                 <tr>
                     <th>Material</th>
                     <th>Quantidade</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
 
             <tbody id="lista-materiais">
+
             </tbody>
         </table>
 
