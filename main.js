@@ -35,6 +35,12 @@ async function carregarMateriais() {
                         onclick="baixarMaterial(${material.id}, ${material.quantidade})">
                         Baixar
                     </button>
+
+                    <button
+                        class="btn-excluir"
+                        onclick="excluirMaterial(${material.id})">
+                        Excluir
+                    </button>
                 </td>
             </tr>
         `;
@@ -90,6 +96,20 @@ async function baixarMaterial(id, estoqueAtual) {
     });
 
     inputRetirada.value = "";
+
+    carregarMateriais();
+}
+
+async function excluirMaterial(id) {
+    const confirmar = confirm("Deseja realmente excluir este material?");
+
+    if (!confirmar) {
+        return;
+    }
+
+    await fetch(`${API_URL}/${id}`, {
+        method: "DELETE"
+    });
 
     carregarMateriais();
 }
