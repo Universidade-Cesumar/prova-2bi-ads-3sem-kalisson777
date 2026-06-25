@@ -56,3 +56,9 @@ th{
     background:#0d6efd;
     color:white;
 }
+
+.estoque-critico{
+    background-color: #f8d7da;
+    color: #842029;
+    font-weight: bold;
+}
