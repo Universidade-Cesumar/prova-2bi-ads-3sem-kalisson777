@@ -14,22 +14,19 @@
 
         <div class="formulario">
             <input type="text" id="input-nome" placeholder="Nome do material">
-
             <input type="number" id="input-quantidade" placeholder="Quantidade">
-
-            <button id="btn-cadastrar">
-                Cadastrar
-            </button>
+            <button id="btn-cadastrar">Cadastrar</button>
         </div>
 
         <div class="formulario">
-            <input
-                type="number"
-                id="input-retirada"
-                placeholder="Quantidade para retirar"
-                min="1"
-            >
+            <input type="number" id="input-retirada" placeholder="Quantidade para retirar" min="1">
         </div>
+
+        <div class="formulario">
+            <input type="text" id="input-busca" placeholder="Pesquisar material">
+        </div>
+
+        <p>Total de itens cadastrados: <span id="total-itens">0</span></p>
 
         <h2>Materiais Cadastrados</h2>
 
@@ -42,9 +39,7 @@
                 </tr>
             </thead>
 
-            <tbody id="lista-materiais">
-
-            </tbody>
+            <tbody id="lista-materiais"></tbody>
         </table>
 
     </div>
