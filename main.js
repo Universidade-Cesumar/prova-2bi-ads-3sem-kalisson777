@@ -3,8 +3,12 @@ const API_URL = "https://6a28b1914e1e783349a5e67b.mockapi.io/materiais";
 const inputNome = document.getElementById("input-nome");
 const inputQuantidade = document.getElementById("input-quantidade");
 const inputRetirada = document.getElementById("input-retirada");
+const inputBusca = document.getElementById("input-busca");
+const totalItens = document.getElementById("total-itens");
 const btnCadastrar = document.getElementById("btn-cadastrar");
 const listaMateriais = document.getElementById("lista-materiais");
+
+let materiais = [];
 
 function validarRetirada(estoqueAtual, quantidadeRetirada) {
     if (quantidadeRetirada <= 0) {
@@ -18,15 +22,18 @@ function validarRetirada(estoqueAtual, quantidadeRetirada) {
     return true;
 }
 
-async function carregarMateriais() {
+function atualizarDashboard(lista) {
+    totalItens.textContent = lista.length;
+}
+
+function exibirMateriais(lista) {
     listaMateriais.innerHTML = "";
 
-    const resposta = await fetch(API_URL);
-    const materiais = await resposta.json();
+    lista.forEach(material => {
+        const classeEstoque = material.quantidade < 10 ? "estoque-critico" : "";
 
-    materiais.forEach(material => {
         listaMateriais.innerHTML += `
-            <tr>
+            <tr class="${classeEstoque}">
                 <td>${material.nome}</td>
                 <td>${material.quantidade}</td>
                 <td>
@@ -45,6 +52,32 @@ async function carregarMateriais() {
             </tr>
         `;
     });
+
+    atualizarDashboard(lista);
+}
+
+function filtrarMateriais() {
+    const termoBusca = inputBusca.value.toLowerCase();
+
+    const materiaisFiltrados = materiais.filter(material =>
+        material.nome.toLowerCase().includes(termoBusca)
+    );
+
+    exibirMateriais(materiaisFiltrados);
+}
+
+async function carregarMateriais() {
+    try {
+        listaMateriais.innerHTML = "";
+
+        const resposta = await fetch(API_URL);
+        materiais = await resposta.json();
+
+        exibirMateriais(materiais);
+    } catch (erro) {
+        alert("Erro ao carregar materiais. Verifique sua conexão com a internet.");
+        console.error("Erro ao carregar materiais:", erro);
+    }
 }
 
 btnCadastrar.addEventListener("click", async () => {
@@ -61,18 +94,23 @@ btnCadastrar.addEventListener("click", async () => {
         quantidade: quantidade
     };
 
-    await fetch(API_URL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(novoMaterial)
-    });
+    try {
+        await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(novoMaterial)
+        });
 
-    inputNome.value = "";
-    inputQuantidade.value = "";
+        inputNome.value = "";
+        inputQuantidade.value = "";
 
-    carregarMateriais();
+        carregarMateriais();
+    } catch (erro) {
+        alert("Erro ao cadastrar material. Verifique sua conexão com a internet.");
+        console.error("Erro ao cadastrar material:", erro);
+    }
 });
 
 async function baixarMaterial(id, estoqueAtual) {
@@ -85,19 +123,24 @@ async function baixarMaterial(id, estoqueAtual) {
 
     const novaQuantidade = estoqueAtual - quantidadeRetirada;
 
-    await fetch(`${API_URL}/${id}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            quantidade: novaQuantidade
-        })
-    });
+    try {
+        await fetch(`${API_URL}/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                quantidade: novaQuantidade
+            })
+        });
 
-    inputRetirada.value = "";
+        inputRetirada.value = "";
 
-    carregarMateriais();
+        carregarMateriais();
+    } catch (erro) {
+        alert("Erro ao baixar material. Verifique sua conexão com a internet.");
+        console.error("Erro ao baixar material:", erro);
+    }
 }
 
 async function excluirMaterial(id) {
@@ -107,11 +150,18 @@ async function excluirMaterial(id) {
         return;
     }
 
-    await fetch(`${API_URL}/${id}`, {
-        method: "DELETE"
-    });
+    try {
+        await fetch(`${API_URL}/${id}`, {
+            method: "DELETE"
+        });
 
-    carregarMateriais();
+        carregarMateriais();
+    } catch (erro) {
+        alert("Erro ao excluir material. Verifique sua conexão com a internet.");
+        console.error("Erro ao excluir material:", erro);
+    }
 }
+
+inputBusca.addEventListener("input", filtrarMateriais);
 
 carregarMateriais();
